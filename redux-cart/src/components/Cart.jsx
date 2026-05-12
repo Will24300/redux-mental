@@ -1,11 +1,18 @@
-function Cart({ cartItems, products, totalPrice, onUpdateQuantity, onRemove, onClose }) {
+import { useDispatch, useSelector } from "react-redux";
+import { removeFromCart, updateQuantity } from "../features/cart";
+
+function Cart({ products, totalPrice, onClose }) {
+  const cartItems = useSelector((state) => state.cart.items);
+  const dispatch = useDispatch();
   return (
     <>
       <div className="cart-overlay" onClick={onClose}></div>
       <aside className="cart-panel">
         <div className="cart-header">
           <h3>Your Cart</h3>
-          <button className="close-btn" onClick={onClose}>✕</button>
+          <button className="close-btn" onClick={onClose}>
+            ✕
+          </button>
         </div>
 
         {cartItems.length === 0 ? (
@@ -30,7 +37,12 @@ function Cart({ cartItems, products, totalPrice, onUpdateQuantity, onRemove, onC
                         <button
                           className="qty-btn"
                           onClick={() =>
-                            onUpdateQuantity(item.productId, item.quantity - 1)
+                            dispatch(
+                              updateQuantity({
+                                productId: item.productId,
+                                quantity: item.quantity - 1,
+                              }),
+                            )
                           }
                         >
                           −
@@ -39,7 +51,12 @@ function Cart({ cartItems, products, totalPrice, onUpdateQuantity, onRemove, onC
                         <button
                           className="qty-btn"
                           onClick={() =>
-                            onUpdateQuantity(item.productId, item.quantity + 1)
+                            dispatch(
+                              updateQuantity({
+                                productId: item.productId,
+                                quantity: item.quantity + 1,
+                              }),
+                            )
                           }
                         >
                           +
@@ -47,7 +64,7 @@ function Cart({ cartItems, products, totalPrice, onUpdateQuantity, onRemove, onC
                       </div>
                       <button
                         className="remove-btn"
-                        onClick={() => onRemove(item.productId)}
+                        onClick={() => dispatch(removeFromCart(item.productId))}
                       >
                         Remove
                       </button>
